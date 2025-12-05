@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  main:
+    web-application-type: reactive
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+
+# (Optional) customize timeouts / thread pool if necessary

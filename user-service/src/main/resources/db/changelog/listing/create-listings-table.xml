@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <!-- ============================== -->
+    <!--    CREATE LISTINGS TABLE       -->
+    <!-- ============================== -->
+    <changeSet id="004-create-listings-table" author="yoesoff">
+        <createTable tableName="listings">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="listing_type" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="updated_at" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <!-- Add indexes -->
+        <createIndex tableName="listings" indexName="idx_listings_user_id">
+            <column name="user_id"/>
+        </createIndex>
+
+        <createIndex tableName="listings" indexName="idx_listings_created_at">
+            <column name="created_at"/>
+        </createIndex>
+
+        <createIndex tableName="listings" indexName="idx_listings_type">
+            <column name="listing_type"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="listings"/>
+        </rollback>
+    </changeSet>
+
+    <!-- ============================== -->
+    <!--       SEED TEST DATA           -->
+    <!-- ============================== -->
+    <changeSet id="001-seed-listings" author="yoesoff">
+        <comment>Insert sample listings for testing</comment>
+
+        <insert tableName="listings">
+            <column name="user_id" valueNumeric="1"/>
+            <column name="listing_type" value="rent"/>
+            <column name="price" valueNumeric="6000"/>
+            <column name="created_at" valueNumeric="1475820997000000"/>
+            <column name="updated_at" valueNumeric="1475820997000000"/>
+        </insert>
+
+        <insert tableName="listings">
+            <column name="user_id" valueNumeric="1"/>
+            <column name="listing_type" value="sale"/>
+            <column name="price" valueNumeric="350000"/>
+            <column name="created_at" valueNumeric="1475820998000000"/>
+            <column name="updated_at" valueNumeric="1475820998000000"/>
+        </insert>
+
+        <insert tableName="listings">
+            <column name="user_id" valueNumeric="2"/>
+            <column name="listing_type" value="rent"/>
+            <column name="price" valueNumeric="4500"/>
+            <column name="created_at" valueNumeric="1475820999000000"/>
+            <column name="updated_at" valueNumeric="1475820999000000"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="listings">
+                <where>user_id IN (1, 2)</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

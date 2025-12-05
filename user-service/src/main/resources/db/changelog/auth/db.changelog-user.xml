@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="001-create-users" author="Yusuf Ibrahim">
+        <createTable tableName="users">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="username" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="email" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="full_name" type="VARCHAR(100)"/>
+            <column name="phone" type="VARCHAR(20)"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_by" type="VARCHAR(100)"/>
+            <column name="created_at" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="updated_at" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="users" indexName="idx_users_username">
+            <column name="username"/>
+        </createIndex>
+
+        <sql>
+            CREATE TRIGGER users_before_insert
+                BEFORE INSERT ON users
+                FOR EACH ROW
+                SET NEW.created_at = UNIX_TIMESTAMP(NOW(6)) * 1000000,
+                    NEW.updated_at = UNIX_TIMESTAMP(NOW(6)) * 1000000;
+        </sql>
+        <sql>
+            CREATE TRIGGER users_before_update
+                BEFORE UPDATE ON users
+                FOR EACH ROW
+                SET NEW.updated_at = UNIX_TIMESTAMP(NOW(6)) * 1000000;
+        </sql>
+
+        <rollback>
+            <dropTable tableName="users"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>API Documentation - Real Estate App</title>
+    <style>
+        body {
+            background: #f6f8fa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 24px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(44,62,80,0.08);
+        }
+        .api-explorer {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 8px;
+            padding: 18px 24px;
+            margin-bottom: 2em;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.04);
+        }
+        .api-explorer h2 {
+            color: #1565c0;
+            margin: 0 0 0.5em 0;
+            font-size: 1.15em;
+        }
+        .api-explorer a {
+            color: #1976d2;
+            font-weight: 600;
+            text-decoration: none;
+            margin-right: 18px;
+        }
+        .api-explorer a:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            color: #1a2533;
+            font-size: 2.2em;
+            margin-bottom: 0.5em;
+            letter-spacing: 1px;
+        }
+        .controller-group {
+            margin-bottom: 2.5em;
+            padding: 18px 24px;
+            border-radius: 8px;
+            background: #f2f6fc;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.04);
+        }
+        h2 {
+            color: #1565c0;
+            font-size: 1.25em;
+            margin-top: 0;
+            margin-bottom: 1em;
+            letter-spacing: 0.5px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        li {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e3e8ee;
+            transition: background 0.2s;
+        }
+        li:last-child {
+            border-bottom: none;
+        }
+        li:hover {
+            background: #eaf1fb;
+        }
+        .endpoint {
+            font-weight: 600;
+            color: #1976d2;
+            margin-right: 18px;
+            font-family: 'Fira Mono', 'Consolas', monospace;
+        }
+        .method {
+            font-size: 0.98em;
+            color: #5c6f7c;
+        }
+        @media (max-width: 600px) {
+            .container { padding: 8px; }
+            .controller-group, .api-explorer { padding: 10px 8px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Real Estate API Documentation</h1>
+
+    <div class="api-explorer">
+        <h2>API Explorer &amp; OpenAPI Docs</h2>
+        <a href="/swagger-ui.html" target="_blank">Swagger UI</a>
+        <a href="/v3/api-docs" target="_blank">OpenAPI JSON</a>
+    </div>
+
+    <!-- API groups below (unchanged) -->
+    <div class="controller-group">
+        <h2>AuthController <span style="color:#888;">(/api/auth)</span></h2>
+        <ul>
+            <li><span class="endpoint">POST /api/auth/login</span> <span class="method">Login (returns JWT)</span></li>
+            <li><span class="endpoint">POST /api/auth/register</span> <span class="method">Register new user</span></li>
+        </ul>
+    </div>
+    <div class="controller-group">
+        <h2>UserController <span style="color:#888;">(/users)</span></h2>
+        <ul>
+            <li><span class="endpoint">GET /users</span> <span class="method">List all users</span></li>
+            <li><span class="endpoint">POST /users</span> <span class="method">Create user</span></li>
+            <li><span class="endpoint">GET /users/username/{username}</span> <span class="method">Get user by username</span></li>
+            <li><span class="endpoint">GET /users/{id}</span> <span class="method">Get user by ID</span></li>
+            <li><span class="endpoint">DELETE /users/{id}</span> <span class="method">Delete user by ID</span></li>
+        </ul>
+    </div>
+
+    <div class="controller-group">
+        <h2>AdminController <span style="color:#888;">(/api)</span></h2>
+        <ul>
+            <li><span class="endpoint">GET /api/admin</span> <span class="method">Hello Admin (requires ADMIN role)</span></li>
+            <li><span class="endpoint">GET /api/user</span> <span class="method">Hello User (requires USER role)</span></li>
+        </ul>
+    </div>
+    <div class="controller-group">
+        <h2>GreetingRestController <span style="color:#888;">(/rest)</span></h2>
+        <ul>
+            <li><span class="endpoint">GET /rest/greeting</span> <span class="method">Greeting endpoint</span></li>
+        </ul>
+    </div>
+    <div class="controller-group">
+        <h2>GreetingController <span style="color:#888;">(/)</span></h2>
+        <ul>
+            <li><span class="endpoint">GET /</span> <span class="method">Greeting HTML page</span></li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

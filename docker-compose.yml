@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: btc_user_service
+    ports:
+      - "8081:8081"
+    networks:
+      - btc-net
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+  listing-service:
+    build:
+      context: ./listing-service
+      dockerfile: Dockerfile
+    container_name: btc_listing_service
+    ports:
+      - "6000:6000"
+    networks:
+      - btc-net
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: btc_api_gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - user-service
+      - listing-service
+    networks:
+      - btc-net
+
+networks:
+  btc-net:
+    driver: bridge

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="003-create-user-roles" author="Yusuf Ibrahim">
+        <createTable tableName="user_roles">
+            <column name="user_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_by" type="VARCHAR(100)"/>
+            <column name="created_at" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="updated_at" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="user_roles" columnNames="user_id,role_id" constraintName="pk_user_roles"/>
+
+        <addForeignKeyConstraint
+                baseTableName="user_roles"
+                baseColumnNames="user_id"
+                constraintName="fk_user_roles_user"
+                referencedTableName="users"
+                referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint
+                baseTableName="user_roles"
+                baseColumnNames="role_id"
+                constraintName="fk_user_roles_role"
+                referencedTableName="roles"
+                referencedColumnNames="id"/>
+
+        <createIndex tableName="user_roles" indexName="idx_user_roles_user_id">
+            <column name="user_id"/>
+        </createIndex>
+        <createIndex tableName="user_roles" indexName="idx_user_roles_role_id">
+            <column name="role_id"/>
+        </createIndex>
+
+        <sql>
+            CREATE TRIGGER user_roles_before_insert
+                BEFORE INSERT ON user_roles
+                FOR EACH ROW
+                SET NEW.created_at = UNIX_TIMESTAMP(NOW(6)) * 1000000,
+                    NEW.updated_at = UNIX_TIMESTAMP(NOW(6)) * 1000000;
+        </sql>
+        <sql>
+            CREATE TRIGGER user_roles_before_update
+                BEFORE UPDATE ON user_roles
+                FOR EACH ROW
+                SET NEW.updated_at = UNIX_TIMESTAMP(NOW(6)) * 1000000;
+        </sql>
+
+        <rollback>
+            <sql>DROP TRIGGER IF EXISTS user_roles_before_insert;</sql>
+            <sql>DROP TRIGGER IF EXISTS user_roles_before_update;</sql>
+            <dropTable tableName="user_roles"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
