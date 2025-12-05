@@ -1,5 +1,23 @@
 version: "3.8"
 services:
+  mysql_realestate:
+    image: mysql:8.0
+    container_name: mysql_realestate
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: realestate
+      MYSQL_ROOT_PASSWORD: root
+      TZ: Asia/Jakarta
+    ports:
+      - "3307:3306"   # gunakan port host 3307 agar tidak bentrok dgn MySQL lokal
+    volumes:
+      - db_realestate_app_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   user-service:
     build:
       context: ./user-service
@@ -11,6 +29,9 @@ services:
       - btc-net
     environment:
       - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      mysql_realestate:
+        condition: service_healthy
 
   listing-service:
     build:
@@ -21,6 +42,9 @@ services:
       - "6000:6000"
     networks:
       - btc-net
+    depends_on:
+      mysql_realestate:
+        condition: service_healthy
 
   api-gateway:
     build:
@@ -32,9 +56,13 @@ services:
     depends_on:
       - user-service
       - listing-service
+      - mysql_realestate
     networks:
       - btc-net
 
 networks:
   btc-net:
     driver: bridge
+
+volumes:
+  db_realestate_app_data:
