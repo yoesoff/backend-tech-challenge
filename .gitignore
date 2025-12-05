@@ -34,3 +34,4 @@ venv/
 
 # Liquibase
 liquibase.*
+api-gateway/target
