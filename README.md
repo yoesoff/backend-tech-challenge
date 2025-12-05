@@ -5,7 +5,7 @@ This project is a microservices-based application built with **Spring Boot** and
 - **Listing Service**: Manages listings (e.g., products, items, etc.).
 - **Security**: Uses JWT for authentication and authorization.
 - **Database**: MySQL with Liquibase for migrations.
-- **API Gateway**: (TODO) To be set up using Spring Cloud Gateway.
+- **API Gateway**: (DONE) Set up using Spring Cloud Gateway.
 
 ## Technologies Used
 
