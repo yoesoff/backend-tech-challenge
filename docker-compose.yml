@@ -1,5 +1,10 @@
 version: "3.8"
+
 services:
+
+  # ================================
+  #          MYSQL DATABASE
+  # ================================
   mysql_realestate:
     image: mysql:8.0
     container_name: mysql_realestate
@@ -9,60 +14,85 @@ services:
       MYSQL_ROOT_PASSWORD: root
       TZ: Asia/Jakarta
     ports:
-      - "3307:3306"   # gunakan port host 3307 agar tidak bentrok dgn MySQL lokal
+      - "3307:3306"
     volumes:
       - db_realestate_app_data:/var/lib/mysql
+
+    # Healthcheck agar service lain tidak start sebelum MySQL siap
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
 
+  # ================================
+  #          USER SERVICE
+  # ================================
   user-service:
     build:
       context: ./user-service
       dockerfile: Dockerfile
     container_name: btc_user_service
+    depends_on:
+      mysql_realestate:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_realestate:3306/realestate?useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true&serverTimezone=Asia/Jakarta
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+      TZ: Asia/Jakarta
+
+    command: sh -c "sleep 10 && java -jar app.jar"  # tambahan delay agar aman
+
     ports:
       - "8081:8081"
     networks:
       - btc-net
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
-    depends_on:
-      mysql_realestate:
-        condition: service_healthy
 
+  # ================================
+  #        LISTING SERVICE
+  # ================================
   listing-service:
     build:
       context: ./listing-service
       dockerfile: Dockerfile
     container_name: btc_listing_service
+    depends_on:
+      mysql_realestate:
+        condition: service_healthy
     ports:
       - "6000:6000"
     networks:
       - btc-net
-    depends_on:
-      mysql_realestate:
-        condition: service_healthy
 
+  # ================================
+  #         API GATEWAY
+  # ================================
   api-gateway:
     build:
       context: ./api-gateway
       dockerfile: Dockerfile
     container_name: btc_api_gateway
-    ports:
-      - "8080:8080"
     depends_on:
       - user-service
       - listing-service
       - mysql_realestate
+    ports:
+      - "8080:8080"
     networks:
       - btc-net
 
+# ================================
+#              NETWORK
+# ================================
 networks:
   btc-net:
     driver: bridge
 
+# ================================
+#              VOLUME
+# ================================
 volumes:
   db_realestate_app_data:
